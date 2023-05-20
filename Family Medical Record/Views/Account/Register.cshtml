@@ -1,0 +1,73 @@
+﻿@model Family_Medical_Record.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/Scripts/jquery-1.11.1.min.js")
+</head>
+<body class="no-layout">
+    <main aria-labelledby="title">
+        <div class="center">
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4>Create a new account.</h4>
+                <hr />
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                <div class="avatar-upload">
+                    <div class="avatar-edit">
+                        <input type='file' id="imageUpload" name="imageUpload" accept=".png, .jpg, .jpeg" />
+                        <label for="imageUpload"></label>
+                    </div>
+                    <div class="avatar-preview">
+                        <div id="imagePreview" style="background-image: url('/Icons/User.png');">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Username, new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="offset-md-2 col-md-10">
+                        <input type="submit" value="Register" class="btn btn-primary btn-style" />
+                    </div>
+                </div>
+            }
+        </div>
+    </main>
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @Scripts.Render("~/Scripts/MyJs.js")
+</body>
+</html>

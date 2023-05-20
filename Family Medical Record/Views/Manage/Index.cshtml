@@ -1,0 +1,111 @@
+﻿@model Family_Medical_Record.Models.Doctor
+
+@using Family_Medical_Record.Models;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using Microsoft.AspNet.Identity;
+
+@{
+    ViewBag.Title = "Manage";
+
+    if(User.IsInRole("Doctor"))
+    {
+
+        double Age = DateTime.Now.Subtract(Model.DOB).TotalDays / 365;
+    }
+
+    ApplicationDbContext ADC = new ApplicationDbContext();
+    var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(ADC));
+    var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(ADC));
+    string uname = User.Identity.GetUserName();
+    var currentUser = UserManager.Users.Where(x => x.UserName == uname).First();
+
+    var currentRole = roleManager.FindById(currentUser.Roles.First().RoleId);
+}
+
+<div class="elements row">
+    <div class="col-md-12 profile widget-shadow center">
+        <h4 class="title3">My Profile</h4>
+        @if (User.IsInRole("Doctor"))
+        {
+            <div class="profile-top">
+                <img src="@currentUser.Picture" alt="@Model.FirstName @Model.LastName">
+                <h4>@Model.FirstName @Model.LastName</h4>
+                <h5>@currentUser.UserName - @currentRole.Name - @Model.Gender</h5>
+            </div>
+
+            <div class="profile-text">
+                <div class="profile-row">
+                    <div class="profile-left">
+                        <i class="fa fa-stethoscope profile-icon"></i>
+                    </div>
+                    <div class="profile-right">
+                        <h4>@Model.Speciality</h4>
+                        <p>Speciality</p>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+                <div class="profile-row row-middle">
+                    <div class="profile-left">
+                        <i class="fa fa-graduation-cap profile-icon"></i>
+                    </div>
+                    <div class="profile-right">
+                        <h4>@Model.Education</h4>
+                        <p>Education</p>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-left">
+                        <i class="fa fa-hospital-o profile-icon"></i>
+                    </div>
+                    <div class="profile-right">
+                        <h4>@Model.Hospital</h4>
+                        <p>Hospital</p>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="profile-top">
+                <img src="@currentUser.Picture" alt="@currentUser.UserName">
+                <h4>@currentUser.UserName</h4>
+                <h5>@currentRole.Name</h5>
+            </div>
+        }
+
+        <div class="profile-btm">
+            <ul>
+                <li>
+                    <a href="~/Manage/ChangePassword">
+                        <h4>
+                            <i class="fa fa-key profile-icon"></i>
+                        </h4>
+                        <h5>Change Password</h5>
+                    </a>
+                </li>
+                @if (User.IsInRole("Doctor"))
+                {
+                    <li>
+                        <a href="~/Doctors/UploadFile">
+                            <h4>
+                                <i class="fa fa-graduation-cap profile-icon"></i>
+                            </h4>
+                            <h5>Upload Degree</h5>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="~/Doctors/DoctorFiles?username=@currentUser.UserName">
+                            <h4>
+                                <i class="fa fa-graduation-cap profile-icon"></i>
+                            </h4>
+                            <h5>View Degrees</h5>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Family_Medical_Record.Models.Appointment>
+
+@{
+    ViewBag.Title = "Appointments";
+}
+
+<h3 class="title1">@ViewBag.Title</h3>
+
+<div class="inbox-page">
+    @foreach (var item in Model)
+    {
+        <div class="inbox-row widget-shadow" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="mail"><img src="@item.Patient.Picture" alt="@item.PatientId" class="prfil-img" /></div>
+            <div class="mail mail-name"> <h6>@item.Patient.FirstName @item.Patient.LastName</h6> </div>
+            <a href="~/Appointments/Details/@item.AppointmentId">
+                <div class="mail"><p>View Details</p></div>
+            </a>
+            <div class="mail-right"><p>@item.DateTime.ToString("dd MMM")</p></div>
+            <div class="clearfix"> </div>
+        </div>
+    }
+
+</div>

@@ -1,0 +1,159 @@
+﻿@model Family_Medical_Record.Models.Appointment
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = Model.Patient.FirstName + "'s Appointment";
+
+    double Age = DateTime.Now.Subtract(Model.Patient.DOB).TotalDays / 365;
+
+    string uname = User.Identity.GetUserName();
+
+    string status = "Waiting";
+
+    if(Model.IsAccepted)
+    {
+        status = "Accepted";
+    }
+    else if(Model.CancelledBy.Length > 1)
+    {
+        status = "Cancelled";
+    }
+
+}
+
+<div class="elements row">
+    <div class="col-md-12 profile widget-shadow center">
+        <h4 class="title3">Appointment Details</h4>
+
+            <div class="profile-top">
+                <a href="~/Patients/DPView/@Model.Patient.PatientId">
+                    <img src="@Model.Patient.Picture" alt="@Model.Patient.FirstName @Model.Patient.LastName">
+                    <h4>@Model.Patient.FirstName @Model.Patient.LastName</h4>
+                    <h5>@Age.ToString("00.0") years old - @Model.Patient.Gender</h5>
+                </a>
+            </div>
+
+            <div class="profile-text">
+                <div class="profile-row">
+                    <div class="profile-left">
+                        <i class="fa fa-calendar-o profile-icon"></i>
+                    </div>
+                    <div class="profile-right">
+                        <h4>@Model.DateTime.ToString("dd MMM, yyyy")</h4>
+                        <p>Apointment Date</p>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+
+                @if (Model.Patient.Guardian == uname)
+                {
+                    <div class="profile-row row-middle">
+                        <div class="profile-left">
+                            <i class="fa fa-stethoscope profile-icon"></i>
+                        </div>
+                        <div class="profile-right">
+                            <h4>@Model.Doctor</h4>
+                            <p>Doctor</p>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                }
+
+                <div class="profile-row">
+                    <div class="profile-left">
+                        <i class="fa fa-spinner profile-icon"></i>
+                    </div>
+                    <div class="profile-right">
+                        <h4>@status</h4>
+                        <p>Status</p>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+
+            </div>
+
+        <div class="profile-btm">
+            <ul>
+                @if (status == "Waiting")
+                {
+                    if (Model.Doctor == uname)
+                    {
+                        <li>
+                            <a href="~/Appointments/Accept/@Model.AppointmentId">
+                                <h4>
+                                    <i class="fa fa-check-circle-o profile-icon"></i>
+                                </h4>
+                                <h5>Accept</h5>
+                            </a>
+                        </li>
+                    }
+                    else if (Model.Patient.Guardian == uname)
+                    {
+                        <li>
+                            <h4>
+                                <i class="fa fa-clock-o profile-icon"></i>
+                            </h4>
+                            <h5>Waiting</h5>
+                        </li>
+                    }
+                }
+
+                <li>
+                    <a href="~/Appointments/Delete/@Model.AppointmentId">
+                        <h4>
+                            <i class="fa fa-trash-o profile-icon"></i>
+                        </h4>
+                        <h5>Delete</h5>
+                    </a>
+                </li>
+
+                @if (status == "Cancelled")
+                {
+                    if (Model.CancelledBy == uname)
+                    {
+                        <li>
+
+                            <h4>
+                                <i class="fa fa-ban profile-icon"></i>
+                            </h4>
+                            <h5>Cancelled By: You</h5>
+                        </li>
+                    }
+                    else if (Model.CancelledBy == Model.Patient.Guardian)
+                    {
+                        <li>
+
+                            <h4>
+                                <i class="fa fa-ban profile-icon"></i>
+                            </h4>
+                            <h5>Cancelled By: User (@Model.Patient.Guardian)</h5>
+                        </li>
+                    }
+                    else if (Model.CancelledBy == Model.Doctor)
+                    {
+                        <li>
+
+                            <h4>
+                                <i class="fa fa-ban profile-icon"></i>
+                            </h4>
+                            <h5>Cancelled By: Doctor (@uname)</h5>
+                        </li>
+                    }
+
+                }
+                else
+                {
+                    <li>
+                        <a href="~/Appointments/Cancel/@Model.AppointmentId">
+                            <h4>
+                                <i class="fa fa-ban profile-icon"></i>
+                            </h4>
+                            <h5>Cancel</h5>
+                        </a>
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</div>

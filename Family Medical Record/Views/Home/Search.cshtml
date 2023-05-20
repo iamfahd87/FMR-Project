@@ -1,0 +1,13 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "Search: " + Model;
+}
+
+@{
+    Html.RenderAction("_DoctorsSearch", "Doctors", new { id = Model });
+
+    Html.RenderAction("_PatientsSearch", "Patients", new { id = Model });
+}
+
+

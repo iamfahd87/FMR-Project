@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Family_Medical_Record.Models.Appointment>
+
+@using Family_Medical_Record.Models;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using Microsoft.AspNet.Identity;
+
+<li class="dropdown head-dpdn">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-bell"></i><span class="badge blue">@Model.Count()</span></a>
+    <ul class="dropdown-menu">
+        @if (Model.Count() > 0)
+        {
+            <li>
+                <div class="notification_header">
+                    <h3>You have @Model.Count() new notifications</h3>
+                </div>
+            </li>
+            foreach (var item in Model)
+            {
+                ApplicationDbContext ADC = new ApplicationDbContext();
+                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(ADC));
+                string doc = item.Doctor;
+                string cst = item.Patient.Guardian;
+
+                var Doctor = UserManager.Users.Where(x => x.UserName == doc).First();
+                var Customer = UserManager.Users.Where(x => x.UserName == cst).First();
+
+                <li>
+                    <a href="~/Appointments/Details/@item.AppointmentId">
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <div class="user_img"><img src="@Customer.Picture" alt=""></div>
+                        }
+                        else
+                        {
+                            <div class="user_img"><img src="@Doctor.Picture" alt=""></div>
+                        }
+
+                    <div class="notification_desc">
+                        @{
+                            if (User.IsInRole("Doctor"))
+                            {
+                                if (item.CancelledBy.Length > 0 && item.CancelledBy != Doctor.UserName)
+                                {
+                                    <p>Appointment cancelled</p>
+                                }
+                                else if (item.IsAccepted == false)
+                                {
+                                    <p>New appointment</p>
+                                }
+                            }
+                            else
+                            {
+                                if (item.CancelledBy.Length > 0 && item.CancelledBy != Customer.UserName)
+                                {
+                                    <p>Appointment rejected</p>
+                                }
+                                else if (item.IsAccepted == true)
+                                {
+                                    <p>Appointment accepted</p>
+                                }
+                            }
+                        }
+                        <p><span>@item.DateTime.ToString("dd MMM, yyyy")</span></p>
+                    </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+            }
+            <li>
+                <div class="notification_bottom">
+                    <a href="~/Appointments/Index">See all notifications</a>
+                </div>
+            </li>
+        }
+        else
+        {
+            <li>
+                <div class="notification_header">
+                    <h3>You have no new notifications</h3>
+                </div>
+            </li>
+        }
+
+    </ul>
+</li>
+

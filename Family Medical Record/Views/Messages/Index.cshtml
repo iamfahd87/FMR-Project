@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Family_Medical_Record.Models.Message>
+
+@using Family_Medical_Record.Models;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using Microsoft.AspNet.Identity;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h3 class="title1">@ViewBag.Title</h3>
+
+<div class="inbox-page">
+    @foreach (var item in Model)
+    {
+
+        ApplicationDbContext ADC = new ApplicationDbContext();
+        var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(ADC));
+
+        string uname = User.Identity.GetUserName();
+
+        var currentUser = UserManager.Users.Where(x => x.UserName == item.Receptient).First();
+        if (item.Receptient == uname)
+        {
+            currentUser = UserManager.Users.Where(x => x.UserName == item.Sender).First();
+        }
+
+        <div class="inbox-row widget-shadow" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="mail"><img src="@currentUser.Picture" alt="" class="prfil-img" /></div>
+            <div class="mail mail-name"> <h6>@currentUser.UserName</h6> </div>
+
+            <a href="/Messages/Chat?id=@currentUser.UserName">
+                <div class="mail"><p>@item.Text</p></div>
+            </a>
+            <div class="mail-right"><p>@item.TimeStamp.ToString("dd MMM")</p></div>
+            <div class="clearfix"> </div>
+        </div>
+    }
+</div>

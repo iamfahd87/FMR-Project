@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Family_Medical_Record.Models.Record>
+
+@using Microsoft.AspNet.Identity;
+
+<div class="panel-body widget-shadow">
+    @if (Model.Count() > 0)
+    {
+        <h4>@Model.First().Patient.FirstName @Model.First().Patient.LastName's Files</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Origin</th>
+                    <th>Date</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@item.Origin</td>
+                        <td>@item.Date</td>
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <td>@Html.ActionLink(" Download", "DownloadFile", new { id = item.RecordId }, new { @class = "fa fa-download btn btn-primary btn-style" })</td>
+                            
+                            if (User.IsInRole("Admin") || item.Patient.Guardian == User.Identity.GetUserName())
+                            {
+                                <td>@Html.ActionLink(" Delete", "DeleteFile", new { id = item.RecordId }, new { @class = "fa fa-trash-o btn btn-danger btn-style" })</td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+
+        <p>Nothing Found...</p>
+    }
+</div>

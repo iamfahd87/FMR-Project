@@ -1,0 +1,55 @@
+﻿@model Family_Medical_Record.Models.Patient
+
+@using Microsoft.AspNet.Identity;
+
+@{
+    ViewBag.Title = Model.FirstName + " " + Model.LastName;
+}
+
+<div class="elements row">
+    <div class="col-md-12 profile widget-shadow center">
+        <h4 class="title3">ID: @Model.PatientId</h4>
+
+        <div class="profile-top">
+            <img src="@Model.Picture" alt="@Model.FirstName @Model.LastName">
+            <h4>@Model.FirstName @Model.LastName</h4>
+        </div>
+
+        @if (User.IsInRole("Admin") || Model.Guardian == User.Identity.GetUserName())
+        {
+            <div class="profile-btm">
+                <ul>
+                    <li>
+                        <a href="~/Patients/Edit/@Model.PatientId">
+                            <h4>
+                                <i class="fa fa-edit profile-icon"></i>
+                            </h4>
+                            <h5>Edit Details</h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/Patients/UploadFile/@Model.PatientId">
+                            <h4>
+                                <i class="fa fa-file-o profile-icon"></i>
+                            </h4>
+                            <h5>Add Record</h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/Patients/Delete/@Model.PatientId">
+                            <h4>
+                                <i class="fa fa-trash-o profile-icon"></i>
+                            </h4>
+                            <h5>Delete</h5>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        }
+    </div>
+</div>
+
+
+@{
+    Html.RenderAction("_FilesPartial", "Patients", new { id = Model.PatientId });
+}

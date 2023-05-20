@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Family_Medical_Record.Models.Message>
+
+@using Family_Medical_Record.Models;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using Microsoft.AspNet.Identity;
+
+<li class="dropdown head-dpdn">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-envelope"></i><span class="badge">@Model.Count()</span></a>
+    <ul class="dropdown-menu">
+        @if (Model.Count() > 0)
+        {
+            <li>
+                <div class="notification_header">
+                    <h3>You have @Model.Count() new messages</h3>
+                </div>
+            </li>
+            foreach (var item in Model)
+            {
+                ApplicationDbContext ADC = new ApplicationDbContext();
+                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(ADC));
+                string sen = User.Identity.GetUserName();
+                string rec = item.Receptient;
+
+                if(rec == sen)
+                {
+                    rec = item.Sender;
+                }
+
+                var Sender = UserManager.Users.Where(x => x.UserName == sen).First();
+                var Reciever = UserManager.Users.Where(x => x.UserName == rec).First();
+
+                <li>
+                    <a href="~/Messages/Chat?id=@Reciever.UserName">
+                        <div class="user_img"><img src="@Reciever.Picture" alt=""></div>
+                        <div class="notification_desc">
+                            @if (item.Text.Length > 25)
+                            {
+                                <p>@item.Text.Substring(0, 20) ...</p>
+                            }
+                            else
+                            {
+                                <p>@item.Text</p>
+                            }
+                            <p><span>@item.TimeStamp.ToString("dd MMM, yyyy")</span></p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </li>
+            }
+            <li>
+                <div class="notification_bottom">
+                    <a href="~/Messages/Index">See all messages</a>
+                </div>
+            </li>
+        }
+        else
+        {
+            <li>
+                <div class="notification_header">
+                    <h3>You have no new messages</h3>
+                </div>
+            </li>
+        }
+
+    </ul>
+</li>
+

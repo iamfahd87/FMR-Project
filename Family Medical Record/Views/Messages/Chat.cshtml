@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Family_Medical_Record.Models.Message>
+
+@using Family_Medical_Record.Models;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using Microsoft.AspNet.Identity;
+
+@{
+    ViewBag.Title = "Chat";
+}
+
+<div>
+
+    <div class="widget-shadow MsgBox">
+        <h4 class="title3">@ViewBag.Rec</h4>
+        @if (Model.Count() > 0)
+        {
+            ApplicationDbContext ADC = new ApplicationDbContext();
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(ADC));
+            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(ADC));
+            string sen = User.Identity.GetUserName();
+            string rec = ViewBag.Rec;
+
+            var Sender = UserManager.Users.Where(x => x.UserName == sen).First();
+            var Reciever = UserManager.Users.Where(x => x.UserName == rec).First();
+
+            <div class="scrollbar scrollbar1">
+                @foreach (var item in Model)
+                {
+                    if (item.Sender == Sender.UserName)
+                    {
+                        <div class="activity-row activity-row1 activity-right">
+                            <div class="col-xs-3 activity-img"><img src="@Sender.Picture" class="img-responsive prfil-img" alt=""></div>
+                            <div class="col-xs-9 activity-img1">
+                                <div class="activity-desc-sub">
+                                    <p>@item.Text</p>
+                                    <span>@item.TimeStamp.ToString("dd MMM, yy HH:mm")</span>
+                                </div>
+                            </div>
+                            <div class="clearfix"> </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="activity-row activity-row1 activity-left">
+                            <div class="col-xs-9 activity-img2">
+                                <div class="activity-desc-sub1">
+                                    <p>@item.Text</p>
+                                    <span class="right">@item.TimeStamp.ToString("dd MMM, yy HH:mm")</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-3 activity-img"><img src="@Reciever.Picture" class="img-responsive prfil-img" alt=""></div>
+                            <div class="clearfix"> </div>
+                        </div>
+                    }
+                }
+            </div>
+        }
+        <div class="chat-bottom">
+
+            @using (Html.BeginForm("Send", "Messages", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" id="Receptient" name="Receptient" value="@ViewBag.Rec" />
+                <div class="row">
+                    <div  class="col-md-8">
+                        <input type="text" placeholder="Reply" id="Text" name="Text">
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <input type="submit" value="Send" class="btn btn-primary" />
+                    </div>
+                </div>
+                
+            }
+
+        </div>
+    </div>
+</div>

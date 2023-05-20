@@ -1,0 +1,48 @@
+﻿@model Family_Medical_Record.Models.Patient
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+
+<main aria-labelledby="title">
+    <h2>Deletion Confirmation</h2>
+
+    <h3>Are you sure you want to delete this record?</h3>
+    <div class="center text-center">
+        <div class="avatar-upload">
+            <div class="avatar-preview">
+                <div id="imagePreview" style="background-image: url('@Model.Picture');">
+                </div>
+            </div>
+        </div>
+        <h4>@Model.FirstName @Model.LastName</h4>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.DOB)
+            </dt>
+
+            <dd>
+                @Model.DOB.ToShortDateString()
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Gender)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Gender)
+            </dd>
+
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-primary btn-style" />
+            </div>
+        }
+    </div>
+</main>

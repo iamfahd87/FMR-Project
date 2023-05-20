@@ -1,0 +1,156 @@
+﻿<!DOCTYPE HTML>
+<html lang="en-us">
+<head>
+    <title>@ViewBag.Title - FMR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Family Medical Record, FMR, Health Portal, Admin Panel, Patients Portal, Medical Record, Health History" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0, 1); } </script>
+
+    @Styles.Render("~/Content/css")
+
+    @Scripts.Render("~/bundles/template")
+
+    <script>
+        new WOW().init();
+    </script>
+    <!--//end-animate-->
+</head>
+<body class="cbp-spmenu-push">
+    <div class="main-content">
+        <!--left-fixed -navigation-->
+        <div class=" sidebar" role="navigation">
+            <div class="navbar-collapse">
+                <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="cbp-spmenu-s1" data-navigation="true">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="~/Home"><i class="fa fa-home nav_icon"></i>Home</a>
+                        </li>
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-users nav_icon"></i>My Family <span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level collapse">
+                                    <li>
+                                        <a href="~/Patients/MyFamily">All Members</a>
+                                    </li>
+                                    <li>
+                                        <a href="~/Patients/Create">Add New Member</a>
+                                    </li>
+                                </ul>
+                                <!-- /nav-second-level -->
+                            </li>
+                        }
+                        @if (!User.IsInRole("Doctor"))
+                        {
+                            <li>
+                                <a href="~/Doctors"><i class="fa fa-stethoscope nav_icon"></i>Doctors</a>
+                            </li>
+                        }
+
+                        @if (!User.IsInRole("Admin"))
+                        {
+                            <li>
+                                <a href="~/Appointments"><i class="fa fa-list nav_icon"></i>Appointments</a>
+                            </li>
+                        }
+
+                        <li>
+                            <a href="~/Messages"><i class="fa fa-envelope-o nav_icon"></i>Messages</a>
+                        </li>
+                    </ul>
+                    <!-- //sidebar-collapse -->
+                </nav>
+            </div>
+        </div>
+        <!--left-fixed -navigation-->
+        <!-- header-starts -->
+        <div class="sticky-header header-section ">
+            <div class="header-left">
+                <!--toggle button start-->
+                <button id="showLeftPush"><i class="fa fa-bars"></i></button>
+                <!--toggle button end-->
+                <!--logo -->
+                <div class="logo">
+                    <a href="~/Home">
+                        <h1>FMR</h1>
+                        <span>User Panel</span>
+                    </a>
+                </div>
+                <!--//logo-->
+                <!--search-box-->
+                <div class="search-box">
+
+                    @using (Html.BeginForm("Search", "Home", FormMethod.Get, new { @class = "input" }))
+                    {
+                        <input class="sb-search-input input__field--madoka" placeholder="Search..." type="search" id="input-31" name="search" />
+
+                        <label class="input__label" for="input-31">
+                            <svg class="graphic" width="100%" height="100%" viewBox="0 0 404 77" preserveAspectRatio="none">
+                                <path d="m0,0l404,0l0,77l-404,0l0,-77z" />
+                            </svg>
+                        </label>
+                    }
+                </div>
+                <!--//end-search-box-->
+                <div class="clearfix"> </div>
+            </div>
+            <div class="header-right">
+                <div class="profile_details_left">
+                    <!--notifications of menu start -->
+                    <ul class="nofitications-dropdown">
+                        @{
+                            Html.RenderAction("_MessagesPartial", "Messages");
+                            if (!User.IsInRole("Admin"))
+                            {
+                                Html.RenderAction("_AppointmentsPartial", "Appointments");
+                            }
+                        }
+                    </ul>
+                    <div class="clearfix"> </div>
+                </div>
+                <!--notification menu end -->
+                @Html.Partial("_LoginPartial")
+                <div class="clearfix"> </div>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+        <!-- //header-ends -->
+
+        <div id="page-wrapper">
+            <div class="main-page">
+                @RenderBody()
+            </div>
+        </div>
+
+        <!--footer-->
+        <div class="footer">
+            <p>&copy; @DateTime.Now.Year FMR User Panel. All Rights Reserved</p>
+        </div>
+        <!--//footer-->
+    </div>
+
+    <script>
+        var menuLeft = document.getElementById('cbp-spmenu-s1'),
+            showLeftPush = document.getElementById('showLeftPush'),
+            body = document.body;
+
+        showLeftPush.onclick = function () {
+            classie.toggle(this, 'active');
+            classie.toggle(body, 'cbp-spmenu-push-toright');
+            classie.toggle(menuLeft, 'cbp-spmenu-open');
+            disableOther('showLeftPush');
+        };
+
+        function disableOther(button) {
+            if (button !== 'showLeftPush') {
+                classie.toggle(showLeftPush, 'disabled');
+            }
+        }
+    </script>
+
+    @Scripts.Render("~/bundles/footer")
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Family_Medical_Record.Models.Patient>
+
+@using Microsoft.AspNet.Identity;
+
+<div class="elements row">
+    @foreach (var item in Model)
+    {
+        double Age = DateTime.Now.Subtract(item.DOB).TotalDays / 365;
+
+        <div class="col-md-4 profile widget-shadow">
+            <h4 class="title3">Patient</h4>
+            <div class="profile-top">
+                <a href="~/Patients/Details/@item.PatientId">
+                    <img src="@item.Picture" alt="@item.FirstName @item.LastName">
+                    <h4>@item.FirstName @item.LastName</h4>
+                    <h5>@Age.ToString("0.0") years old - @item.Gender</h5>
+                </a>
+            </div>
+            <div class="profile-text">
+                <div class="profile-row">
+                    <div class="profile-left">
+                        <i class="fa fa-heart profile-icon"></i>
+                    </div>
+                    <div class="profile-right">
+                        <h4>@item.BloodGroup</h4>
+                        <p>Blood Group</p>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+                <div class="profile-row row-middle">
+                    <div class="profile-left">
+                        <i class="fa fa-arrows-v profile-icon"></i>
+                    </div>
+                    <div class="profile-right">
+                        <h4>@item.Height</h4>
+                        <p>@Html.DisplayNameFor(m => m.Height)</p>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-left">
+                        <i class="fa fa-arrow-down profile-icon"></i>
+                    </div>
+                    <div class="profile-right">
+                        <h4>@item.Weight</h4>
+                        <p>@Html.DisplayNameFor(m => m.Weight)</p>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+            </div>
+            <div class="profile-btm">
+                <ul>
+                    @if (User.IsInRole("Admin") || item.Guardian == User.Identity.GetUserName())
+                    {
+                        <li>
+                            <a href="~/Patients/Edit/@item.PatientId">
+                                <h4>
+                                    <i class="fa fa-pencil-square-o profile-icon"></i>
+                                </h4>
+                                <h5>Edit</h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="~/Patients/Delete/@item.PatientId">
+                                <h4>
+                                    <i class="fa fa-trash-o profile-icon"></i>
+                                </h4>
+                                <h5>Delete</h5>
+                            </a>
+                        </li>
+                    }
+                    <li>
+                        <a href="~/Patients/Files/@item.PatientId">
+                            <h4>
+                                <i class="fa fa-file-o profile-icon"></i>
+                            </h4>
+                            <h5>View Medical Record</h5>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+
+</div>
